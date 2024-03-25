@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using xo.Data;
+using xo.Models;
 
 namespace xo.Controllers
 {
@@ -7,22 +9,23 @@ namespace xo.Controllers
   public class UserController : ControllerBase
   {
 
+    private readonly DbContext _db;
 
-    public UserController()
+    public UserController(IConfiguration config)
     {
-
+      _db = new DbContext(config);
     }
 
     [HttpGet]
-    public int[] GetAll()
+    public IEnumerable<User> GetAll()
     {
-      return [1, 2, 3];
+      return _db.Find<User>("SELECT * FROM MyApp.users");
     }
 
     [HttpGet("{id}")]
-    public string GetById(string id)
+    public User GetById(string id)
     {
-      return id;
+      return _db.FindOne<User>("SELECT * FROM MyApp.users WHERE id = " + id);
     }
   }
 }
